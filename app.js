@@ -46,18 +46,32 @@ app.get('/get_user', (req, res) => {
 });
 
 // API to update user information
-app.put('/update_user', (req, res) => {
+app.post('/add_user', (req, res) => {
   const { email, age } = req.body;
-  if (!email || !age) return res.status(400).json({ error: 'Email and age are required!' });
+  console.log('Request Body:', req.body); // Debugging
+
+  if (!email || !age) {
+    console.error('Validation Error: Missing email or age');
+    return res.status(400).json({ error: 'Email and age are required!' });
+  }
 
   const users = readUsers();
-  const userIndex = users.findIndex((u) => u.email === email);
-  if (userIndex === -1) return res.status(404).json({ error: 'User not found!' });
+  console.log('Existing Users:', users); // Debugging
 
-  users[userIndex].age = age;
+  if (users.some((user) => user.email === email)) {
+    console.error('Duplicate User Error:', email);
+    return res.status(400).json({ error: 'User already exists!' });
+  }
+
+  const newUser = { email, age };
+  users.push(newUser);
   writeUsers(users);
-  res.json({ message: 'User updated successfully!', user: users[userIndex] });
+  console.log('New User Added:', newUser); // Debugging
+
+  res.status(201).json({ message: 'User added successfully!', user: newUser });
 });
+
+
 
 // API to delete a user
 app.delete('/delete_user', (req, res) => {

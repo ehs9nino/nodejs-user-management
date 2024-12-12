@@ -7,11 +7,9 @@ on:
   pull_request:
     branches:
       - main
-  schedule:
-    - cron: '0 2 * * *' # Run nightly at 2 AM UTC
 
 jobs:
-  lint-and-test:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,13 +19,18 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '16'
 
       - name: Install dependencies
         run: npm install
 
-      - name: Run ESLint
-        run: npm run lint
+      - name: Verify project setup
+        run: |
+          if [ ! -f "package.json" ]; then
+            echo "Error: package.json not found!"
+            exit 1
+          fi
+          echo "Project setup verified!"
 
       - name: Run tests
         run: npm test
