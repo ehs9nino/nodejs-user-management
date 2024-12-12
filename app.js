@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
+
 const app = express();
 const PORT = 3000;
 
@@ -13,7 +14,7 @@ if (!fs.existsSync(DATA_FILE)) {
   fs.writeFileSync(DATA_FILE, JSON.stringify([]));
 }
 
-// Utility function to read/write user data
+// Utility functions to read/write user data
 const readUsers = () => JSON.parse(fs.readFileSync(DATA_FILE));
 const writeUsers = (data) => fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 
@@ -71,7 +72,12 @@ app.delete('/delete_user', (req, res) => {
   res.json({ message: 'User deleted successfully!' });
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+// Start the server if this file is run directly
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
+}
+
+// Export the app for testing
+module.exports = { app };

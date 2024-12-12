@@ -2,5 +2,9 @@
   {
     "email": "ehs9nino@gmail.com",
     "age": 29
+  },
+  {
+    "email": "test@example.com",
+    "age": 25
   }
 ]
